@@ -11,7 +11,7 @@ Very simple implementations of the Linear Congruential Generator and the 32-bit 
 
 int main()
 {
-	gen4::nds::Time time { 22, 12, 25, 11, 42, 3 }; //Initialise the DS time
+	gen4::nds::Time time { 22, 12, 25, 11, 42, 3 }; //Initialise the DS time and delay
 	ui32 delay = 5982; //Define a delay of about 100 seconds
 	ui32 seed = time.generate_rng_seed(5982); //Generate the rng seed from the time
 
