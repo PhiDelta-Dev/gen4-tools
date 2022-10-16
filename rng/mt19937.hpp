@@ -38,7 +38,7 @@ namespace gen4::rng
 		static const ui32 twist_value(const ui32& t_value)
 		{
 			ui32 twisted_value = (t_value >> 1);
-			if (t_value % 2) { twisted_value ^= MT_TWIST_MATRIX_COEFFICIENT; }
+			if (t_value & 1) { twisted_value ^= MT_TWIST_MATRIX_COEFFICIENT; }
 
 			return twisted_value;
 		}

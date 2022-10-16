@@ -39,11 +39,9 @@ namespace gen4::nds
 
 	public:
 		Time(const ui32& t_seconds) : m_seconds(t_seconds) {}
-
-		//The year must be modulo 100
 		Time
 		(
-			const ui8& t_year,
+			const ui8& t_year,	//Modulo 100
 			const ui8& t_month,
 			const ui8& t_day,
 			const ui8& t_hour,
