@@ -12,14 +12,14 @@
 #define MT_INITIALISATION_COEFFICIENT 0x6C078965
 #define MT_TWIST_MATRIX_COEFFICIENT	  0x9908B0DF
 
-#define MT_TEMPERING_BIT_SHIFT_1	11
-#define MT_TEMPERING_BIT_SHIFT_2	7
-#define MT_TEMPERING_BIT_SHIFT_3	15
-#define MT_TEMPERING_BIT_SHIFT_4	18
-#define MT_TEMPERING_BIT_MASK_1		0xFFFFFFFF
-#define MT_TEMPERING_BIT_MASK_2		0x9D2C5680
-#define MT_TEMPERING_BIT_MASK_3		0xEFC60000
-#define MT_TEMPERING_BIT_MASK_4		0xFFFFFFFF
+#define MT_TEMPERING_BIT_SHIFT_1(value)	value >> 11
+#define MT_TEMPERING_BIT_SHIFT_2(value)	value << 7
+#define MT_TEMPERING_BIT_SHIFT_3(value)	value << 15
+#define MT_TEMPERING_BIT_SHIFT_4(value)	value >> 18
+#define MT_TEMPERING_BIT_MASK_1	0xFFFFFFFF
+#define MT_TEMPERING_BIT_MASK_2	0x9D2C5680
+#define MT_TEMPERING_BIT_MASK_3	0xEFC60000
+#define MT_TEMPERING_BIT_MASK_4	0xFFFFFFFF
 
 namespace gen4::rng
 {
@@ -48,10 +48,10 @@ namespace gen4::rng
 		{
 			ui32 tempered_value = t_value;
 
-			tempered_value ^= ((tempered_value >> MT_TEMPERING_BIT_SHIFT_1) & MT_TEMPERING_BIT_MASK_1);
-			tempered_value ^= ((tempered_value << MT_TEMPERING_BIT_SHIFT_2) & MT_TEMPERING_BIT_MASK_2);
-			tempered_value ^= ((tempered_value << MT_TEMPERING_BIT_SHIFT_3) & MT_TEMPERING_BIT_MASK_3);
-			tempered_value ^= ((tempered_value >> MT_TEMPERING_BIT_SHIFT_4) & MT_TEMPERING_BIT_MASK_4);
+			tempered_value ^= MT_TEMPERING_BIT_SHIFT_1(tempered_value) & MT_TEMPERING_BIT_MASK_1;
+			tempered_value ^= MT_TEMPERING_BIT_SHIFT_2(tempered_value) & MT_TEMPERING_BIT_MASK_2;
+			tempered_value ^= MT_TEMPERING_BIT_SHIFT_3(tempered_value) & MT_TEMPERING_BIT_MASK_3;
+			tempered_value ^= MT_TEMPERING_BIT_SHIFT_4(tempered_value) & MT_TEMPERING_BIT_MASK_4;
 
 			return tempered_value;
 		}
