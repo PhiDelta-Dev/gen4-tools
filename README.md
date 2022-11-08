@@ -5,7 +5,7 @@ Very simple implementations of the Linear Congruential Generator and the 32-bit 
 
 As an example, here's a program which generates a Trainer ID/Secret ID pair and then finds a shiny using method 1.
 
-```
+```c++
 #include "gen4-tools/nds/time.hpp"
 
 #include "gen4-tools/pkm/trainer_id.hpp"
