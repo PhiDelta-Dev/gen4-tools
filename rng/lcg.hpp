@@ -13,7 +13,7 @@ namespace gen4::rng
 	{
 	private:
 		//Current value
-		ui32 m_value;
+		ui32 m_value { 0 };
 
 	public:
 		//Seed the LCG
