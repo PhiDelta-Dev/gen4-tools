@@ -81,8 +81,8 @@ si32 main()
 ```
 Here's the output of the program
 ```
-RNG seed: 740c1b4f
+RNG seed: 740C1B4F
 Trainer ID: 20950
 Secret ID: 666
-Successfully found a shiny on frame 876 of seed 740c1b4f!
+Successfully found a shiny on frame 876 of seed 740C1B4F!
 ```
