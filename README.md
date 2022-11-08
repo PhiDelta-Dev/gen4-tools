@@ -16,8 +16,8 @@ As an example, here's a program which generates a Trainer ID/Secret ID pair and 
 si32 main()
 {
 	//Initialise the NDS time and generate the seed
-	gen4::nds::Time time { 22, 12, 25, 12, 30, 42 };	//25 December 2022, 12:30:42
-	ui32 rng_seed = time.generate_rng_seed(6969);		//6969 v-frames since the game was booted
+	gen4::nds::Time time { 22, 12, 25, 12, 30, 42 }; //25 December 2022, 12:30:42
+	ui32 rng_seed = time.generate_rng_seed(6969); //6969 v-frames since the game was booted
 
 	//Print the seed
 	std::cout << "RNG seed: " << std::hex << rng_seed << std::dec << std::endl;
