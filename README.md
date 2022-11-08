@@ -79,3 +79,10 @@ si32 main()
 	return 0;
 }
 ```
+Here's the output of the program
+```
+RNG seed: 740c1b4f
+Trainer ID: 20950
+Secret ID: 666
+Successfully found a shiny on frame 876 of seed 740c1b4f!
+```
