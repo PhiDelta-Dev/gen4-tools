@@ -1,7 +1,7 @@
 # gen4-tools
  
 Some C++ tools to emulate the PRNG mechanics of the Gen 4 Pokémon games.
-Very simple implementations of the Linear Congruential Generator and the 32-bit Mersenne Twister, which can be included as part of more complex algorithms, such as methods for generating Pokémon and Trainer IDs.
+Very simple implementations of the Linear Congruential Generator and the 32-bit Mersenne Twister, which may be used as part of more complex algorithms, such as methods for generating Pokémon and Trainer IDs.
 
 As an example, here's a program which generates a Trainer ID/Secret ID pair and then finds a shiny using method 1.
 
