@@ -6,7 +6,7 @@ Implementations of some of the algorithms involved in the generation of Pokémon
 More features are to come!
 
 
-As an example, here's a program which, given a certain date, time and vframe, searches for a Chansey holding a Lucky Egg on Route 209 in Pokémon Platinum Version.
+As an example, here's a small program which, given a certain date, time and vframe, searches for a Chansey holding a Lucky Egg on Route 209 in Pokémon Platinum Version.
 
 ```c++
 #include <iostream>
