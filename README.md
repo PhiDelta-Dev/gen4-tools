@@ -42,7 +42,7 @@ int main()
 		encounter_lcg.advance();
 		ui8 encounter_slot = ((encounter_lcg.get_value() >> 16) / 656) & 0xFF;
 
-		//Make sure it's either slot 9 or slot 11, as those are the ones which Chansey is found
+		//Make sure it's either slot 9 or slot 11, as those are the ones in which Chansey is found
 		if (encounter_slot < 94 || (encounter_slot == 98))
 		{
 			//Keep searching
