@@ -1,25 +1,23 @@
 #pragma once
 
-#include "gen4-tools/utility/data_types.hpp"
+#include "gen4-tools/data_types.hpp"
 
 #define NDS_FPS 59.8261
 
-namespace gen4::nds
+namespace nds
 {
-	//Definition of the NDS time structure (these really are 32-bit integers!)
 	struct Time
 	{
-		ui32 year;
-		ui32 month;
-		ui32 day;
-		ui32 hour;
-		ui32 minute;
-		ui32 second;
+		ui32 year { 2000 };
+		ui32 month { 01 };
+		ui32 day { 01 };
+		ui32 hour { 00 };
+		ui32 minute { 00 };
+		ui32 second { 00 };
 
-		//Generate the RNG seed from the NDS time and delay
-		const ui32 generate_rng_seed(const ui32& t_delay) const
+		const ui32 generate_rng_seed(const ui32& frame) const
 		{
-			return ((month * day + minute + second) << 24) | (hour << 16) + year + t_delay;
+			return ((month * day + minute + second) << 24) | (hour << 16) + (year % 100) + frame;
 		}
 	};
 }

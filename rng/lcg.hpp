@@ -1,32 +1,46 @@
 #pragma once
 
-#include "gen4-tools/utility/data_types.hpp"
+#include "gen4-tools/data_types.hpp"
 
-//The (hardcoded) parameters of the LCG
-#define LCG_MULTIPLIER	0x41C64E6D
-#define LCG_INCREMENT	0x00006073
+#define LCG_MULTIPLIER 0x41C64E6D
+#define LCG_INVERSE_MULTIPLIER 0xEEB9EB65
+#define LCG_INCREMENT 0x00006073
 
-namespace gen4::rng
+namespace rng
 {
-	//Definition of the LCG
 	class LCG
 	{
 	private:
-		//Current value
-		ui32 m_value { 0 };
+		ui32 value { 0 };
+		ui32 advancements{ 0 };
 
 	public:
-		//Seed the LCG
-		void seed(const ui32& t_seed) { m_value = t_seed; }
-
-		//Advancement function
-		void advance()
+		void seed(const ui32& seed) 
 		{ 
-			//Use the current value to obtain a new one, which is stored in its place
-			m_value = LCG_MULTIPLIER * m_value + LCG_INCREMENT; 
+			value = seed;
+			advancements = 0;
 		}
 
-		//Get the current value
-		const ui32& get_value() const { return m_value; }
+		void advance()
+		{ 
+			value = LCG_MULTIPLIER * value + LCG_INCREMENT; 
+			advancements++;
+		}
+
+		void rewind()
+		{
+			value = LCG_INVERSE_MULTIPLIER * (value - LCG_INCREMENT);
+			advancements--;
+		}
+
+		const ui32& get_value() const 
+		{
+			return value;
+		}
+		
+		const ui32& get_advancements() const
+		{
+			return advancements;
+		}
 	};
 }
