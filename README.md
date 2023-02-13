@@ -9,83 +9,80 @@ More features to come!
 As an example, here's a program which generates a Trainer ID/Secret ID pair and then finds a shiny using method 1:
 
 ```c++
-#include "gen4-tools/nds/time.hpp"
+#include <iostream>
+#include <iomanip>
 
+#include "gen4-tools/nds/time.hpp"
 #include "gen4-tools/pkm/trainer_id.hpp"
 #include "gen4-tools/pkm/pokemon_data.hpp"
 
-#include <iostream>
-
-si32 main()
+int main()
 {
-	//Initialise the NDS time and generate the seed
-	gen4::nds::Time time { 22, 12, 25, 12, 30, 42 }; //25 December 2022, 12:30:42
-	ui32 rng_seed = time.generate_rng_seed(6969); //6969 v-frames since the game was booted
+	//Generate the seed using the startup date and frame
+	nds::Time time = nds::Time{ 2023, 1, 1, 12, 0, 0 };
+	ui32 seed = time.generate_rng_seed(3000);
 
-	//Print the seed
-	std::cout << "RNG seed: " << std::hex << rng_seed << std::dec << std::endl;
+	//Initialise the LCG which will be used to search through the encounters
+	rng::LCG search_lcg;
+	search_lcg.seed(seed);
 
-	//Initialise and seed the 32-bit linear congruential generator
-	gen4::rng::LCG lc_generator;
-	lc_generator.seed(rng_seed);
+	//Allocate the LCG which will be used to simulate each encounter
+	rng::LCG encounter_lcg;
 
-	//Initialise and seed the 32-bit Merseenne Twister
-	gen4::rng::MT19937 mt_generator;
-	mt_generator.seed(rng_seed);
+	//Allocate the structure which will be used to store the data of each generated Pokémon
+	pkm::PokemonData pokemon_data;
 
-	//Generate the trainer IDs
-	gen4::pkm::TrainerIds trainer_ids;
-	trainer_ids.generate(mt_generator);
-
-	//Print the trainer IDs
-	std::cout 
-		<< "Trainer ID: " << trainer_ids.get_trainer_id() << std::endl
-		<< "Secret ID: "  << trainer_ids.get_secret_id()  << std::endl;
-
-	/*
-		Now let's find a shiny using method 1!
-
-		Since method 1 involves 4 advancements (2 for the PID + 2 for the IVs),
-		we create a secondary LCG just to simulate those without actually advancing
-		the main LCG.
-
-		Then we check the shininess of the newly generated Pokémon using the trainer
-		IDs we have just generated.
-
-		If the Pokémon was not shiny, we advance the LCG and continue searching
-		until we find one.
-	*/
-	gen4::pkm::PokemonData pokemon_data;
-	gen4::rng::LCG simulated_lcg;
-	ui32 lcg_frame = 0;
-
-	//First attempt
-	simulated_lcg.seed(lc_generator.get_value());
-	pokemon_data.generate_method_1(simulated_lcg);
-
-	//If the first attempt was not successful, keep looking for shinies
-	while (!pokemon_data.get_shiny(trainer_ids))
+	//Check the first 2000 frames
+	for (ui32 lcg_frame = 0; lcg_frame < 2000; lcg_frame++)
 	{
-		lc_generator.advance();
-		++lcg_frame;
+		//Copy the value of the search_lcg to the encounter_lcg
+		encounter_lcg.seed(search_lcg.get_value());
 
-		simulated_lcg.seed(lc_generator.get_value());
-		pokemon_data.generate_method_1(simulated_lcg);
+		//Generate the encounter slot
+		encounter_lcg.advance();
+		ui8 encounter_slot = ((encounter_lcg.get_value() >> 16) / 656) & 0xFF;
+
+		//Make sure it's either slot 9 or slot 11, as those are the ones which Chansey is found
+		if (encounter_slot < 94 || (encounter_slot == 98))
+		{
+			//Keep searching
+			search_lcg.advance();
+			continue;
+		}
+
+		//Generate the Chansey
+		pokemon_data.generate_method_j(encounter_lcg, pkm::LeadPokemon::NONE);
+
+		//Generate the item
+		encounter_lcg.advance();
+		ui8 item_value = (encounter_lcg.get_value() >> 16) % 100;
+
+		//Make sure it's a Lucky Egg
+		if (item_value < 95)
+		{
+			//Keep searching
+			search_lcg.advance();
+			continue;
+		}
+
+		//Success!
+		std::cout 
+			<< "Found a Chansey holding a Lucky Egg on frame " << std::dec << lcg_frame
+			<< " of seed 0x" << std::setfill('0') << std::setw(8) << std::hex << std::uppercase << seed << "!"
+			<< std::endl;
+
+		//Keep searching
+		search_lcg.advance();
 	}
 
-	//Success!
-	std::cout 
-		<< "Successfully found a shiny on frame " << lcg_frame
-		<< " of seed " << std::hex << rng_seed << std::dec << "!" << std::endl;
-
-	//Exit
 	return 0;
 }
 ```
 Here's the output of the program:
 ```
-RNG seed: 740C1B4F
-Trainer ID: 20950
-Secret ID: 666
-Successfully found a shiny on frame 876 of seed 740C1B4F!
+Found a Chansey holding a Lucky Egg on frame 90 of seed 0x010C0BCF!
+Found a Chansey holding a Lucky Egg on frame 362 of seed 0x010C0BCF!
+Found a Chansey holding a Lucky Egg on frame 1373 of seed 0x010C0BCF!
+Found a Chansey holding a Lucky Egg on frame 1832 of seed 0x010C0BCF!
+Found a Chansey holding a Lucky Egg on frame 1995 of seed 0x010C0BCF!
 ```
